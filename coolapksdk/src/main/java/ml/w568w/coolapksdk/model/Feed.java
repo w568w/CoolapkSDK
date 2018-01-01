@@ -26,6 +26,7 @@ public class Feed {
     }
 
     public static Feed parseFrom(JSONObject originData) throws JSONException {
+        
         JSONObject data=originData.optJSONObject("data");
         ArrayList<BaseUser> list=new ArrayList<>();
         JSONArray likeList=data.optJSONArray("userLikeList");

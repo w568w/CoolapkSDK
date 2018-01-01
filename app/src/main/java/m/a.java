@@ -16,29 +16,31 @@ import ml.w568w.coolapksdk.sdk.CoolapkSDK;
 import ml.w568w.coolapksdk.util.CoolapkUtils;
 import ml.w568w.coolapksdk.util.LoginUtils;
 
+
 public class a extends Activity {
 
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
     protected void onStart() {
         super.onStart();
 
-        LinearLayout linearLayout=new LinearLayout(this);
+
+        LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editText=new EditText(this);
-        final EditText editText2=new EditText(this);
+        final EditText editText = new EditText(this);
+        final EditText editText2 = new EditText(this);
         editText.setHint("Input your name");
         editText2.setHint("Input your password");
-        Button button=new Button(this);
+        Button button = new Button(this);
         button.setText("Fuck signing in!");
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CoolapkSDK.createInstance(getApplication())
-                        .login(a.this,editText.getText().toString(), editText2.getText().toString(), new CoolapkSDK.IUiListener() {
+                        .login(a.this, editText.getText().toString(), editText2.getText().toString(), new CoolapkSDK.IUiListener() {
                             @Override
                             public void onComplete(User response) {
-                                Toast.makeText(a.this, "Login success! uid->"+response.uid+",fans num->"+response.fans+",feeds num->"+response.feeds+",bio->"+response.bio, Toast.LENGTH_LONG).show();
+                                Toast.makeText(a.this, "Login success! uid->" + response.uid + ",fans num->" + response.fans + ",feeds num->" + response.feeds + ",bio->" + response.bio, Toast.LENGTH_LONG).show();
                             }
 
                             @Override
