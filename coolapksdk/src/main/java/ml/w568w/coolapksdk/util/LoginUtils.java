@@ -2,12 +2,14 @@ package ml.w568w.coolapksdk.util;
 
 import android.app.Application;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import ml.w568w.coolapksdk.exceptions.LoginFailedException;
 import ml.w568w.coolapksdk.model.LoginInfo;
+import ml.w568w.coolapksdk.model.Notification;
 
 /**
  * Created by w568w on 18-1-1.
@@ -35,7 +38,7 @@ public class LoginUtils extends CoolapkUtils {
         this.mInfo = mInfo;
     }
 
-    public LoginInfo login(String userName, String password) throws JSONException, IOException,LoginFailedException {
+    public LoginInfo login(String userName, String password) throws JSONException, IOException, LoginFailedException {
         try {
             HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL("https://account.coolapk.com/auth/login?forward=https%3A%2F%2Fdeveloper.coolapk.com").openConnection();
             httpsURLConnection.setRequestMethod("GET");
@@ -63,32 +66,40 @@ public class LoginUtils extends CoolapkUtils {
             String response = inputStream2String(httpsURLConnection.getInputStream());
 
             String code = getBetween(response, "access_token&code=", "&message=");
-            httpsURLConnection = (HttpsURLConnection) new URL("https://api.coolapk.com/v6/account/accessToken?code=" + code).openConnection();
-            httpsURLConnection.setRequestMethod("GET");
-            for (String key : headers.keySet()) {
-                httpsURLConnection.setRequestProperty(key, headers.get(key));
-            }
-            String loginInfo = inputStream2String(httpsURLConnection.getInputStream());
+
+            String loginInfo = inputStream2String(getConnection("https://api.coolapk.com/v6/account/accessToken?code=" + code).getInputStream());
             mInfo = LoginInfo.parseFrom(new JSONObject(loginInfo), sessionId);
             return mInfo;
-        }
-        catch (StringIndexOutOfBoundsException e){
+        } catch (StringIndexOutOfBoundsException e) {
             throw new LoginFailedException();
         }
     }
 
-    public void getNotificationList(int page) {
+    /**
+     * @param page 页数，从1开始
+     */
+    public ArrayList<Notification> getNotificationList(int page) {
         try {
-            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL("https://api.coolapk.com/v6/notification/list?page=" + page).openConnection();
-            for (String key : headers.keySet()) {
-                httpsURLConnection.setRequestProperty(key, headers.get(key));
+            String json = inputStream2String(getSignedConnection("https://api.coolapk.com/v6/notification/list?page=" + page).getInputStream());
+            ArrayList<Notification> arrayList = new ArrayList<>();
+            JSONArray array = new JSONObject(json).optJSONArray("data");
+            for (int i = 0; i < array.length(); i++) {
+                arrayList.add(Notification.parseFrom(array.optJSONObject(i)));
             }
-            httpsURLConnection.setRequestProperty("Cookie", "token=" + mInfo.token + ";uid="+ mInfo.uid + ";username=" + mInfo.userName + ";SESSID=" + mInfo.sessionId + ";");
-            Map a=httpsURLConnection.getRequestProperties();
-            httpsURLConnection.setRequestMethod("GET");
-            String loginInfo = inputStream2String(httpsURLConnection.getInputStream());
-        } catch (IOException e) {
+            return arrayList;
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+        return null;
     }
+
+
+
+    private HttpsURLConnection getSignedConnection(String url) throws IOException {
+        HttpsURLConnection httpsURLConnection = getConnection(url);
+        httpsURLConnection.setRequestProperty("Cookie", "token=" + mInfo.token + ";uid=" + mInfo.uid + ";username=" + mInfo.userName + ";SESSID=" + mInfo.sessionId + ";");
+        return httpsURLConnection;
+    }
+
+
 }

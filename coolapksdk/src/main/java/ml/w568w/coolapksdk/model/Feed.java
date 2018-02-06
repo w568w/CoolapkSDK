@@ -25,18 +25,18 @@ public class Feed {
         this.likeList = likeList;
     }
 
-    public static Feed parseFrom(JSONObject originData) throws JSONException {
-        
-        JSONObject data=originData.optJSONObject("data");
-        ArrayList<BaseUser> list=new ArrayList<>();
-        JSONArray likeList=data.optJSONArray("userLikeList");
-        for(int index=0;index<likeList.length();index++){
-            JSONObject user=likeList.optJSONObject(index);
+    public static Feed parseFrom(JSONObject originData,JSONObject replyOriginData) throws JSONException {
+
+        JSONObject data = originData.optJSONObject("data");
+        ArrayList<BaseUser> list = new ArrayList<>();
+        JSONArray likeList = data.optJSONArray("userLikeList");
+        for (int index = 0; index < likeList.length(); index++) {
+            JSONObject user = likeList.optJSONObject(index);
             list.add(new BaseUser(user.optString("username"),
-                    user.optInt("uid",-1),
+                    user.optInt("uid", -1),
                     user.optString("userAvatar")));
         }
-        return new Feed(new BaseUser(data.optString("username"),data.optInt("uid",-1),data.optString("userAvatar")),
+        return new Feed(new BaseUser(data.optString("username"), data.optInt("uid", -1), data.optString("userAvatar")),
                 data.optString("message"),
                 data.optInt("rank_score"),
                 data.optString("feedType"),

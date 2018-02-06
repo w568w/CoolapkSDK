@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file:///media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/Locker.iml" filepath="/media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/Locker.iml" />
       <module fileurl="file:///media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/app/app.iml" filepath="/media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/app/app.iml" />
+      <module fileurl="file:///media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/bcctomesdk/bcctomesdk.iml" filepath="/media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/bcctomesdk/bcctomesdk.iml" />
       <module fileurl="file:///media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/coolapksdk/coolapksdk.iml" filepath="/media/w568w/表情/Document And Settings2/Administrator/StudioProjects/Locker/coolapksdk/coolapksdk.iml" />
     </modules>
   </component>
