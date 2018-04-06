@@ -2,16 +2,9 @@ package ml.w568w.coolapksdk.sdk;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
-
-import org.json.JSONException;
-
-import java.io.IOException;
 
 import ml.w568w.coolapksdk.model.LoginInfo;
 import ml.w568w.coolapksdk.model.User;
-import ml.w568w.coolapksdk.util.CoolapkUtils;
-import ml.w568w.coolapksdk.util.L;
 import ml.w568w.coolapksdk.util.LoginUtils;
 
 /**

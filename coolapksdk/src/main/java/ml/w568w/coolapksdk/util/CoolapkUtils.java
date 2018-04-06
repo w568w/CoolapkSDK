@@ -8,7 +8,6 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
-import android.webkit.CookieManager;
 
 import com.coolapk.market.util.AuthUtils;
 
@@ -22,8 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +32,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import ml.w568w.bcctomesdk.BccToMeSDK;
 import ml.w568w.coolapksdk.model.Feed;
-import ml.w568w.coolapksdk.model.LoginInfo;
 import ml.w568w.coolapksdk.model.User;
 
 
@@ -113,7 +109,7 @@ public class CoolapkUtils {
      * @return
      */
     public User getUserProfileByUid(String uid) {
-        L.l(uid);
+        Log.l(uid);
         try {
             InputStream inputStream = getConnection("https://api.coolapk.com/v6/user/profile?uid=" + uid).getInputStream();
             return User.parseFrom(new JSONObject(inputStream2String(inputStream)));
@@ -129,17 +125,14 @@ public class CoolapkUtils {
      * @param name 用戶名
      * @return 用戶信息
      */
-    public User getUserProfileByName(String name) {
-        try {
-            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL("https://www.coolapk.com/n/" + name).openConnection();
-            String html = inputStream2String(httpsURLConnection.getInputStream());
-            return getUserProfileByUid(getBetween(html, "coolmarket://u/", "\">"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public User getUserProfileByName(String name) throws IOException {
+            return getUserProfileByUid(getUidByName(name));
     }
-
+    public String getUidByName(String name) throws IOException {
+        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL("https://www.coolapk.com/n/" + name).openConnection();
+        String html = inputStream2String(httpsURLConnection.getInputStream());
+        return getBetween(html, "coolmarket://u/", "\">");
+    }
     public Feed getFeedById(String feedId) {
         try {
             InputStream info = getConnection("https://api.coolapk.com/v6/feed/detail?id=" + feedId).getInputStream();
@@ -242,7 +235,7 @@ public class CoolapkUtils {
         OutputStream outputStream = httpsURLConnection.getOutputStream();
         outputStream.write(body.getBytes("utf8"));
         outputStream.close();
-        inputStream2String(httpsURLConnection.getInputStream());
+        String output1=inputStream2String(httpsURLConnection.getInputStream());
         //4:第二步，提交注册，发送验证邮件
         body="submit=2&requestHash="+requestHash+"&type=email&forward=http%3A%2F%2Fwww.coolapk.com&login="+sdk.getmMail()+"%40mail.bccto.me&code=&username="+username+"&password="+password;
         httpsURLConnection = (HttpsURLConnection) new URL("https://account.coolapk.com/auth/register").openConnection();
@@ -255,7 +248,7 @@ public class CoolapkUtils {
         outputStream = httpsURLConnection.getOutputStream();
         outputStream.write(body.getBytes("utf8"));
         outputStream.close();
-        inputStream2String(httpsURLConnection.getInputStream());
+        String output=inputStream2String(httpsURLConnection.getInputStream());
         //5:轮训邮箱接口，获得验证邮件
         String email;
         while((email=getMail(sdk))==null);

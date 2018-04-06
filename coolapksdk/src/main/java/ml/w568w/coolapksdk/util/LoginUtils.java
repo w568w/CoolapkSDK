@@ -53,7 +53,7 @@ public class LoginUtils extends CoolapkUtils {
             httpsURLConnection.disconnect();
 
             String body = "submit=1&requestHash=" + requestHash + "&type=&forward=https%3A%2F%2Fdeveloper.coolapk.com&login=" + userName + "&password=" + password;
-            httpsURLConnection = (HttpsURLConnection) new URL("https://account.coolapk.com/auth/login").openConnection();
+            httpsURLConnection = (HttpsURLConnection) new URL("https://account.coolapk.com/auth/loginByCoolapk").openConnection();
             httpsURLConnection.setRequestMethod("POST");
             for (String key : webHeaders2.keySet()) {
                 httpsURLConnection.setRequestProperty(key, webHeaders2.get(key));
@@ -93,7 +93,15 @@ public class LoginUtils extends CoolapkUtils {
         return null;
     }
 
+    public void followUserByUid(String uid) throws IOException {
+        HttpsURLConnection httpsURLConnection=getSignedConnection("https://api.coolapk.com/v6/user/follow?uid=" + uid);
+        httpsURLConnection.setRequestMethod("POST");
+        inputStream2String(httpsURLConnection.getInputStream());
+    }
 
+    public void followUserByName(String name) throws IOException {
+        followUserByUid(getUidByName(name));
+    }
 
     private HttpsURLConnection getSignedConnection(String url) throws IOException {
         HttpsURLConnection httpsURLConnection = getConnection(url);
