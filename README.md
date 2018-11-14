@@ -4,7 +4,7 @@
 # Usage
 ## Step 1 
 添加以下内容到你的项目build.gradle中:
-```
+```groovy
 allprojects {
 		repositories {
 			...
@@ -13,14 +13,14 @@ allprojects {
 }
 ```
 添加以下内容到你的模块build.gradle中:
-```
+```groovy
 dependencies {
 	        compile 'com.github.w568w:CoolapkSDK:-SNAPSHOT'
 }
 ```
 ## Step 2
 使用下面的代码来登录酷安:
-```
+```java
 		CoolapkSDK.createInstance(getApplication())
                 .login(this, "username", "password", new CoolapkSDK.IUiListener() {
 
